@@ -4,11 +4,14 @@ import reducer from "./reducer";
 import enhancer from "./enhancer";
 import validate from "./validate";
 import persist from "./persist";
+import rehydrate from "./rehydrate";
 import schema from "../schema";
 import Ajv from "ajv";
 
+const API = rehydrate();
 const store = createStore(
   reducer,
+  { API },
   enhancer,
 );
 

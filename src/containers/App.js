@@ -10,8 +10,8 @@ function App() {
     <Provider store={store}>
       <div className="container-fluid">
         {[Books, Characters, Movies].map((Item, index) =>
-          <div key={index} className="row mx-sm-n3">
-            <div className="col pt-sm-3 px-sm-3">
+          <div key={index} className="row mx-n3">
+            <div className="col pt-3 px-3">
               <Item />
             </div>
           </div>
