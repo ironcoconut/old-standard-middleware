@@ -171,6 +171,9 @@ const schema = {
                   "additionalProperties": false,
                   "required": [ "path", "method" ],
                 },
+                {
+                  "additionalProperties": false,
+                },
               ],
             },
           },

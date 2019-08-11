@@ -22,7 +22,6 @@ const getValidationFunction = (model) => {
 const handlers = {
   concat: ({payload}) => draft => [...draft, payload],
   mergeOn: ({payload, idKey}) => draft => {
-    console.log({payload, idKey, draft});
     return payload.reduce((draft, item) => {
       const id = item[idKey];
       if(draft[id]) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from "react-redux";
 import actions from "../actions";
 
@@ -12,22 +12,17 @@ const mapDispatchToProps = {
   get: actions("GET_LOR_BOOKS_REQUEST"),
 };
 
-const Books = ({ books, get }) => (
-  <React.Fragment>
+const Books = ({ books, get }) => {
+  useEffect(() => { get() }, [get]);
+
+  return (
     <ul>
       {Object.values(books).map(book => (
         <li key={book._id}>{book.name}</li>
       ))}
     </ul>
-    <button
-      className="btn btn-primary btn-large btn-block"
-      type="button"
-      onClick={() => get()}
-    >
-      GET LOR BOOKS
-    </button>
-  </React.Fragment>
-);
+  );
+};
 
 export default connect(
   mapStateToProps,

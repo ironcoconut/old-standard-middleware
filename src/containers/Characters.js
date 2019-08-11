@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from "react-redux";
 import { createSelector } from "reselect";
 import actions from "../actions";
@@ -26,34 +26,31 @@ const mapDispatchToProps = {
   onFilter: actions("DOCUMENT_LOR_CHARACTERS_FILTER"),
 };
 
-const Characters = ({ characters, filter, onGet, onFilter }) => (
-  <React.Fragment>
-    <input
-      className="form-control"
-      type="text"
-      placeholder="Filter"
-      value={filter}
-      onChange={e => onFilter(e.target.value)}
-    />
-    {0 < characters.length &&
-      <ul style={{maxHeight: 250, overflowX: "scroll"}}>
-        {characters.map(character => (
-          <li key={character._id}>
-            <p>{character.name}</p>
-            <Quotes id={character._id} />
-          </li>
-        ))}
-      </ul>
-    }
-    <button
-      className="btn btn-secondary btn-large btn-block"
-      type="button"
-      onClick={() => onGet()}
-    >
-      GET LOR CHARACTERS
-    </button>
-  </React.Fragment>
-);
+const Characters = ({ characters, filter, onGet, onFilter }) => {
+  useEffect(() => { onGet() }, [onGet]);
+
+  return (
+    <React.Fragment>
+      <input
+        className="form-control"
+        type="text"
+        placeholder="Filter"
+        value={filter}
+        onChange={e => onFilter(e.target.value)}
+      />
+      {0 < characters.length &&
+        <ul className="mb-0" style={{maxHeight: "calc(100vh - 38px)", overflowX: "scroll"}}>
+          {characters.map(character => (
+            <li key={character._id}>
+              <p>{character.name}</p>
+              <Quotes id={character._id} />
+            </li>
+          ))}
+        </ul>
+      }
+    </React.Fragment>
+  );
+};
 
 export default connect(
   mapStateToProps,
