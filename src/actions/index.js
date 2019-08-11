@@ -1,9 +1,14 @@
+import isFunction from "lodash/isFunction";
 import LOR from "./lordOfTheRings";
+import lorBooks from "./lorBooks";
+import lorCharacters from "./lorCharacters";
+import lorCharactersFilter from "./lorCharactersFilter";
+import lorMovies from "./lorMovies";
+import lorQuotes from "./lorQuotes";
 
 let actions = {};
 
-const register = (action) => {
-  const type = action.type;
+const register = (type, action) => {
   if(actions[type]) {
     console.error(`Duplicate action: ${type}`);
   } else {
@@ -11,11 +16,13 @@ const register = (action) => {
   }
 }
 
-LOR.forEach(register);
+[ LOR, lorBooks, lorCharacters, lorCharactersFilter, lorMovies, lorQuotes].forEach(group => {
+  Object.keys(group).forEach(key => register(key, group[key]));
+});
 
 const merge = (...args) => Object.assign({}, ...args.filter(i=>i));
 
-const buildAction = (type, payload={}) => {
+const buildAction = (type) => (payload={}) => {
   const action = actions[type];
   let result;
 
@@ -27,6 +34,8 @@ const buildAction = (type, payload={}) => {
       payload,
       meta: { warning },
     };
+  } else if(isFunction(action)) {
+    result = { ...action(payload), type };
   } else {
     result = {
       type,

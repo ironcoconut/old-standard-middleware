@@ -19,7 +19,6 @@ const validate = ajv.compile(schema);
 function persistState(state) {
   const copy = cloneDeep(state);
   validate(copy);
-  console.log("Persist:", copy);
   window.localStorage.setItem("old-standard-api", JSON.stringify(copy));
 }
 

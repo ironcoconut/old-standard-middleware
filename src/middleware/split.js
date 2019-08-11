@@ -8,7 +8,7 @@ const split = ({ dispatch }) => next => action => {
 
     split.forEach(({ path, type }) => {
       const payload = path.reduce((acc,key) => acc[key], action.payload);
-      dispatch(actions(type, payload));
+      dispatch(actions(type)(payload));
     });
   }
 

@@ -8,8 +8,12 @@ const rehydrate = () => {
   let initialState = JSON.parse(
     window.localStorage.getItem("old-standard-api")
   );
-  validate(initialState);
-  return initialState;
+  if(initialState) {
+    validate(initialState);
+    return initialState;
+  } else {
+    return undefined;
+  }
 };
 
 export default rehydrate;

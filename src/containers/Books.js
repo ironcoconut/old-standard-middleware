@@ -4,12 +4,12 @@ import actions from "../actions";
 
 const mapStateToProps = (state) => {
   return {
-    books: state.API.books,
+    books: state.books,
   };
 };
 
 const mapDispatchToProps = {
-  get: () => actions("GET_LOR_BOOKS_REQUEST"),
+  get: actions("GET_LOR_BOOKS_REQUEST"),
 };
 
 const Books = ({ books, get }) => (
@@ -22,7 +22,7 @@ const Books = ({ books, get }) => (
     <button
       className="btn btn-primary btn-large btn-block"
       type="button"
-      onClick={get}
+      onClick={() => get()}
     >
       GET LOR BOOKS
     </button>

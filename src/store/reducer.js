@@ -1,5 +1,5 @@
+import produce from "immer"
 import Ajv from "ajv";
-import { combineReducers } from "redux";
 import schema from "../schema";
 
 const ajv = new Ajv({ useDefaults: "empty", removeAdditional: "failing" })
@@ -13,34 +13,30 @@ ajv.compile(schema)(initialState);
 const getValidationFunction = (model) => {
   const validate = ajv.getSchema(`/old-std/reducer.json#/definitions/${model}`);
 
-  return _data => {
-    let data = Object.assign({}, _data);
+  return data => {
     validate(data);
     return data;
-  };
+  }
 };
 
 const handlers = {
-  concat: ({payload}) => state => [...state, payload],
-  merge: ({payload, idKey}) => state => {
-    window.payload = payload;
-    return payload.reduce((acc, item) => {
+  concat: ({payload}) => draft => [...draft, payload],
+  mergeOn: ({payload, idKey}) => draft => {
+    console.log({payload, idKey, draft});
+    return payload.reduce((draft, item) => {
       const id = item[idKey];
-      if(acc[id]) {
-        acc[id] = Object.assign({}, acc[id], item);
+      if(draft[id]) {
+        draft[id] = { ...draft[id], ...item};
       } else {
-        acc[id] = item;
+        draft[id] = item;
       }
-      return acc;
-    }, {...state});
+      return draft;
+    }, draft);
   },
-  set: ({payload, idKey}) => state => (
-    payload.reduce((acc, item) => {
-      const id = item[idKey];
-      acc[id] = item;
-      return acc;
-    }, state)
-  ),
+  merge: ({payload}) => draft => ({...draft, ...payload}),
+  set: ({payload}) => draft => {
+    return draft = payload;
+  },
 };
 
 const processPath = ([next, ...rest], state, handler) => {
@@ -53,35 +49,34 @@ const processPath = ([next, ...rest], state, handler) => {
 };
 
 const reducer = (state, action) => {
-  if(typeof state === "undefined") {
-    return initialState;
-  }
-
-  state = {
-    ...state,
-    actions: [action, ...state.actions],
-  };
-
-  if(action.meta && action.meta.reducer) {
-    let { payload } = action;
-
-    const { path, method, idKey, model } = action.meta.reducer;
-
-    if (model) {
-      payload = payload.map(getValidationFunction(model));
+  return produce(state, draft => {
+    if(typeof draft === "undefined") {
+      console.log(initialState);
+      return draft = initialState;
+    }
+    if("CLEAR_API" === action.type) {
+      return draft = initialState;
     }
 
-    const handler = handlers[method]({payload, idKey});
+    draft.actions = [action, ...draft.actions];
 
-    return processPath(path, state, handler);
-  } else {
-    return state;
-  };
+    if(action.meta && action.meta.reducer) {
+      let { payload } = action;
+
+      const { path, method, idKey, model } = action.meta.reducer;
+
+      if (model) {
+        payload = payload.map(getValidationFunction(model));
+      }
+
+
+      const handler = handlers[method]({payload, idKey});
+
+      return draft = processPath(path, draft, handler);
+    } else {
+      return draft;
+    };
+  });
 };
 
-const coreReducer = combineReducers({
-  API: reducer,
-});
-
-
-export default coreReducer;
+export default reducer;

@@ -2,7 +2,15 @@ const schema = {
   "$id": "/old-std/reducer.json",
   "type": "object",
   "additionalProperties": false,
-  "required": [ "actions", "books", "movies", "characters" ],
+  "required": [
+    "actions",
+    "books",
+    "characters",
+    "characterQuotes",
+    "charactersFilter",
+    "movies",
+    "quotes",
+  ],
   "properties": {
     "actions": {
       "type": "array",
@@ -41,12 +49,35 @@ const schema = {
         },
       },
     },
+    "characterQuotes": {
+      "type": "object",
+      "default": {},
+      "patternProperties": {
+        ".*": {
+          "type": "boolean",
+        },
+      },
+    },
+    "charactersFilter": {
+      "type": "string",
+      "default": "",
+      "blacklist": true,
+    },
     "movies": {
       "type": "object",
       "default": {},
       "patternProperties": {
         ".*": {
           "$ref": "#/definitions/movie",
+        },
+      },
+    },
+    "quotes": {
+      "type": "object",
+      "default": {},
+      "patternProperties": {
+        ".*": {
+          "$ref": "#/definitions/quote",
         },
       },
     },
@@ -88,6 +119,28 @@ const schema = {
           "type": "string",
         },
         "race": {
+          "type": "string",
+          "default": "",
+        },
+      },
+    },
+    "quote": {
+      "type": "object",
+      "required": [ "_id" ],
+      "additionalProperties": false,
+      "properties": {
+        "_id": {
+          "type": "string",
+        },
+        "character": {
+          "type": "string",
+          "default": "",
+        },
+        "movie": {
+          "type": "string",
+          "default": "",
+        },
+        "dialog": {
           "type": "string",
           "default": "",
         },

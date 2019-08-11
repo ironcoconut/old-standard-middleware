@@ -4,15 +4,15 @@ import actions from "../actions";
 
 const mapStateToProps = (state) => {
   return {
-    movies: state.API.movies,
+    movies: state.movies,
   };
 };
 
 const mapDispatchToProps = {
-  get: () => actions("GET_LOR_MOVIES_REQUEST"),
+  get: actions("GET_LOR_MOVIES_REQUEST"),
 };
 
-const Characters = ({ movies, get }) => (
+const Moview = ({ movies, get }) => (
   <React.Fragment>
     {0 < Object.values(movies).length &&
       <ul>
@@ -24,7 +24,7 @@ const Characters = ({ movies, get }) => (
     <button
       className="btn btn-info btn-large btn-block"
       type="button"
-      onClick={get}
+      onClick={() => get()}
     >
       GET LOR MOVIES
     </button>
@@ -34,4 +34,4 @@ const Characters = ({ movies, get }) => (
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Characters)
+)(Moview)

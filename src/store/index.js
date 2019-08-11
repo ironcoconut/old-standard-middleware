@@ -8,15 +8,15 @@ import rehydrate from "./rehydrate";
 import schema from "../schema";
 import Ajv from "ajv";
 
-const API = rehydrate();
+const initialState = rehydrate();
 const store = createStore(
   reducer,
-  { API },
+  initialState,
   enhancer,
 );
 
-store.subscribe(() => validate(store.getState().API));
-store.subscribe(() => persist(store.getState().API));
+store.subscribe(() => validate(store.getState()));
+store.subscribe(() => persist(store.getState()));
 
 const request = (type, payload={}) => {
   store.dispatch(actions(type, payload));
