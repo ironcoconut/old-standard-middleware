@@ -1,6 +1,5 @@
 export default {
   "GET_LOR_QUOTES_REQUEST": characterId => {
-    console.log(characterId);
     return ({
       payload: {
         url: `https://the-one-api.herokuapp.com/v1/character/${characterId}/quote`,

@@ -1,4 +1,6 @@
+import Ajv from "ajv";
 import isFunction from "lodash/isFunction";
+import schema from "../schema";
 import LOR from "./lordOfTheRings";
 import lorBooks from "./lorBooks";
 import lorCharacters from "./lorCharacters";
@@ -6,7 +8,19 @@ import lorCharactersFilter from "./lorCharactersFilter";
 import lorMovies from "./lorMovies";
 import lorQuotes from "./lorQuotes";
 
+const ajv = new Ajv()
+ajv.compile(schema);
+
 let actions = {};
+
+const validateAction = (action) => {
+  const validate = ajv.getSchema("/old-std/reducer.json#/definitions/action");
+  const valid = validate(action);
+
+  if(!valid) {
+    console.warn("Errors on action:", action.type, validate.errors);
+  }
+};
 
 const register = (type, action) => {
   if(actions[type]) {
@@ -14,11 +28,8 @@ const register = (type, action) => {
   } else {
     actions[type] = action;
   }
+  validateAction(buildAction(type)());
 }
-
-[ LOR, lorBooks, lorCharacters, lorCharactersFilter, lorMovies, lorQuotes].forEach(group => {
-  Object.keys(group).forEach(key => register(key, group[key]));
-});
 
 const merge = (...args) => Object.assign({}, ...args.filter(i=>i));
 
@@ -45,5 +56,9 @@ const buildAction = (type) => (payload={}) => {
   }
   return result;
 };
+
+[ LOR, lorBooks, lorCharacters, lorCharactersFilter, lorMovies, lorQuotes].forEach(group => {
+  Object.keys(group).forEach(key => register(key, group[key]));
+});
 
 export default buildAction;
